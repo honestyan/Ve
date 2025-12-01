@@ -81,6 +81,7 @@
                                            level:level
                                         threadID:threadID
                                       bulletinID:bulletinID
+                               bundleIdentifier:bundleIdentifier
                                          iconURL:iconURL
                                    encryptionKey:encryptionKey];
         });
@@ -95,6 +96,7 @@
                                  level:(BarkNotificationLevel)level
                               threadID:(NSString *)threadID
                             bulletinID:(NSString *)bulletinID
+                       bundleIdentifier:(NSString *)bundleIdentifier
                                iconURL:(NSString *)iconURL
                          encryptionKey:(NSString *)encryptionKey {
     NSUserDefaults* preferences = [[NSUserDefaults alloc] initWithSuiteName:kPreferencesIdentifier];
@@ -122,6 +124,9 @@
         [payloadDict setObject:[self levelToString:level] forKey:@"level"];
         [payloadDict setObject:@"default" forKey:@"sound"];
         if (iconURL && iconURL.length > 0) [payloadDict setObject:iconURL forKey:@"icon"];
+        if (bundleIdentifier && bundleIdentifier.length > 0) {
+            [payloadDict setObject:bundleIdentifier forKey:@"bundleIdentifier"];
+        }
         
         // Convert to JSON string
         NSError* jsonError;
@@ -135,6 +140,9 @@
             [requestBody setObject:[self levelToString:level] forKey:@"level"];
             [requestBody setObject:@"default" forKey:@"sound"];
             if (iconURL && iconURL.length > 0) [requestBody setObject:iconURL forKey:@"icon"];
+            if (bundleIdentifier && bundleIdentifier.length > 0) {
+                [requestBody setObject:bundleIdentifier forKey:@"bundleIdentifier"];
+            }
         } else {
             NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
             NSString* encryptedMessage = [self encryptMessage:jsonString withKey:encryptionKey];
@@ -153,6 +161,9 @@
         if (iconURL && iconURL.length > 0) {
             [requestBody setObject:iconURL forKey:@"icon"];
             NSLog(@"[Ve] Adding custom icon URL: %@", iconURL);
+        }
+        if (bundleIdentifier && bundleIdentifier.length > 0) {
+            [requestBody setObject:bundleIdentifier forKey:@"bundleIdentifier"];
         }
     }
     
