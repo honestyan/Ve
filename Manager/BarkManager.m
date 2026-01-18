@@ -78,6 +78,7 @@
                                            title:notificationTitle
                                         subtitle:notificationSubtitle
                                             body:notificationBody
+                                 bundleIdentifier:bundleIdentifier
                                            level:level
                                         threadID:threadID
                                       bulletinID:bulletinID
@@ -92,6 +93,7 @@
                                  title:(NSString *)title
                               subtitle:(NSString *)subtitle
                                   body:(NSString *)body
+                       bundleIdentifier:(NSString *)bundleIdentifier
                                  level:(BarkNotificationLevel)level
                               threadID:(NSString *)threadID
                             bulletinID:(NSString *)bulletinID
@@ -119,6 +121,7 @@
         if (title && title.length > 0) [payloadDict setObject:title forKey:@"title"];
         if (subtitle && subtitle.length > 0) [payloadDict setObject:subtitle forKey:@"subtitle"];
         if (body && body.length > 0) [payloadDict setObject:body forKey:@"body"];
+        if (bundleIdentifier && bundleIdentifier.length > 0) [payloadDict setObject:bundleIdentifier forKey:@"bundleIdentifier"];
         [payloadDict setObject:[self levelToString:level] forKey:@"level"];
         [payloadDict setObject:@"default" forKey:@"sound"];
         if (iconURL && iconURL.length > 0) [payloadDict setObject:iconURL forKey:@"icon"];
@@ -132,6 +135,7 @@
             [requestBody setObject:title forKey:@"title"];
             if (subtitle && subtitle.length > 0) [requestBody setObject:subtitle forKey:@"subtitle"];
             [requestBody setObject:body forKey:@"body"];
+            if (bundleIdentifier && bundleIdentifier.length > 0) [requestBody setObject:bundleIdentifier forKey:@"bundleIdentifier"];
             [requestBody setObject:[self levelToString:level] forKey:@"level"];
             [requestBody setObject:@"default" forKey:@"sound"];
             if (iconURL && iconURL.length > 0) [requestBody setObject:iconURL forKey:@"icon"];
@@ -140,6 +144,9 @@
             NSString* encryptedMessage = [self encryptMessage:jsonString withKey:encryptionKey];
             
             [requestBody setObject:encryptedMessage forKey:@"ciphertext"];
+            if (bundleIdentifier && bundleIdentifier.length > 0) {
+                [requestBody setObject:bundleIdentifier forKey:@"bundleIdentifier"];
+            }
             NSLog(@"[Ve] Sending AES-128-ECB encrypted Bark notification");
         }
     } else {
@@ -147,6 +154,9 @@
         [requestBody setObject:title forKey:@"title"];
         if (subtitle && subtitle.length > 0) [requestBody setObject:subtitle forKey:@"subtitle"];
         [requestBody setObject:body forKey:@"body"];
+        if (bundleIdentifier && bundleIdentifier.length > 0) {
+            [requestBody setObject:bundleIdentifier forKey:@"bundleIdentifier"];
+        }
         NSLog(@"[Ve] Sending unencrypted Bark notification");
         [requestBody setObject:[self levelToString:level] forKey:@"level"];
         [requestBody setObject:@"default" forKey:@"sound"];
